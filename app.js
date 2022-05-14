@@ -30,7 +30,7 @@ app.get("/timeline_feed/:user_id",postValidators.timeline_feed,     postControll
 app.post("/follow_user",    userValidators.follow_unfollow_user, userControllers.follow_user);
 app.post("/unfollow_user",  userValidators.follow_unfollow_user, userControllers.unfollow_user);
 
-app.get("/get_post/:id?", postValidators.get_post_by_id,  postControllers.get_post_by_id); /// AS per the assignment
+app.get("/posts/:id?", postValidators.get_post_by_id,  postControllers.get_post_by_id); /// AS per the assignment
 
 app.listen(3000, () => {
   console.log("Backend server is running!");
