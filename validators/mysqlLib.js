@@ -3,7 +3,7 @@ var mysql = require('mysql');
 var db_config = {
     host: "localhost",
     user: "root",
-    password: "Hardik@!23",// enter ur password
+    password: "",// enter ur password
     database: "assignment",
     charset : 'utf8mb4',
     multipleStatements: true
