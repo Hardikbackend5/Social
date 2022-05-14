@@ -3,14 +3,14 @@
       primary key 
       type:bigInt
     }
-    user_id: {
+    userId: {
       type: string,
     },
-    description: {
+    body: {
       type: String,
       max: 500,
     },
-    img: {
+    title: {
       type: String,
     },
     creation_datetime: timestamp
@@ -22,7 +22,7 @@
       primary key 
       type:bigInt
     }
-    user_id: {
+    userId: {
       type: String,
     },
     post_id: {

@@ -5,10 +5,10 @@ const _ = require("underscore");
 
 const upload_post = async function (req, res) {
     try {
-        var user_id = req.body.user_id;
-        var image = req.body.image;// Image URL
-        var description = req.body.description; 
-        await postService.insert_post({ description, user_id, image});
+        var userId = req.body.userId;
+        var body = req.body.body;
+        var title = req.body.title; 
+        await postService.insert_post({ body, userId, title});
        
         return responses.sendCustomResponse(res,
             constants.responseMessages.ACTION_COMPLETE,
@@ -25,15 +25,15 @@ const upload_post = async function (req, res) {
 
 const update_post = async function (req, res) {
     try {
-        var user_id = req.body.user_id;
-        var image = req.body.image;// Image URL
-        var description = req.body.description; 
+        var userId = req.body.userId;
+        var body = req.body.body;// Image URL
+        var title = req.body.title; 
         var post_id = req.body.id;
-        var data = await postService.get_posts({ post_id, user_id });
+        var data = await postService.get_posts({ post_id, userId });
         if (!data || !data.length) {
             throw constants.responseMessages.INVALID_POST; //error msg
         }
-        await postService.update_post({ post_id, description, image });
+        await postService.update_post({ post_id, body, title });
         return responses.sendCustomResponse(res,
             constants.responseMessages.ACTION_COMPLETE,
             constants.responseFlags.ACTION_COMPLETE,
@@ -49,9 +49,9 @@ const update_post = async function (req, res) {
 
 const delete_post = async function (req, res) {
     try {
-        var user_id = req.body.user_id;
+        var userId = req.body.userId;
         var post_id = req.body.id;
-        var data = await postService.get_posts({ post_id, user_id });
+        var data = await postService.get_posts({ post_id, userId });
         if (!data || !data.length) {
             throw constants.responseMessages.INVALID_ACTION; //error msg
         }
@@ -71,19 +71,19 @@ const delete_post = async function (req, res) {
 
 const like_dislike_post = async function (req, res) {
     try {
-        var post_id = req.body.post_id;
-        var user_id = req.body.user_id;
+        var post_id = req.body.id;
+        var userId = req.body.userId;
         var post_data = await postService.get_posts({ post_id });
         if (!post_data || !post_data.length) {
             throw constants.responseMessages.INVALID_POST; //error msg
         }
-        var data = await postService.get_post_likes({ post_id , user_id});
+        var data = await postService.get_post_likes({ post_id , userId});
         if (!data || !data.length) {
             // Like the post
-            await postService.like_post({ post_id, user_id });
+            await postService.like_post({ post_id, userId });
         }else{
             // Dis-Like the post
-            await postService.dislike_post({ post_id, user_id });
+            await postService.dislike_post({ post_id, userId });
         }
         return responses.sendCustomResponse(res,
             constants.responseMessages.ACTION_COMPLETE,
@@ -101,13 +101,35 @@ const like_dislike_post = async function (req, res) {
 
 const get_post = async function (req, res) {
     try {
-        var user_id = req.params.user_id;
-        var post_id = req.params.post_id || null;
+        var userId = req.params.userId;
+        var post_id = req.params.id || null;
         var sort_by = req.params.sort_by || 0; // 1 means Desc , 0 means ASC
-        console.log("********")
-        var post_data = await postService.get_posts({ post_id, user_id, sort_by });
+        var post_data = await postService.get_posts({ post_id, userId, sort_by });
         if (!post_data || !post_data.length) {
             throw constants.responseMessages.INVALID_POST; //error msg
+        }
+        return responses.sendCustomResponse(res,
+            constants.responseMessages.ACTION_COMPLETE,
+            constants.responseFlags.ACTION_COMPLETE,
+            post_data
+        );
+    } catch (error) {
+        return responses.sendCustomResponse(res, error,
+            constants.responseFlags.SHOW_ERROR_MESSGAE,
+            {}
+        );
+    }
+}
+
+const get_post_by_id = async function (req, res) {
+    try {
+        var post_id = req.params.id || null;
+        console.log("********")
+        var post_data = await postService.get_posts({ post_id });
+        if (!post_data || !post_data.length) {
+            throw constants.responseMessages.INVALID_POST; //error msg
+        }else if(post_id && post_data && post_data.length && (!post_data[0].body || !post_data[0].title)){ //btw title and body are require while uploading a post
+            throw constants.responseMessages.INVALID_POST; //error msg 2
         }
         return responses.sendCustomResponse(res,
             constants.responseMessages.ACTION_COMPLETE,
@@ -150,5 +172,6 @@ module.exports = {
     delete_post:delete_post,
     like_dislike_post:like_dislike_post,
     get_post:get_post,
-    timeline_feed:timeline_feed
+    timeline_feed:timeline_feed,
+    get_post_by_id:get_post_by_id
 }

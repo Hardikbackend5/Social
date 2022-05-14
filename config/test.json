@@ -3,7 +3,7 @@
     "databaseSettings"   : {
       "host"    : "localhost",
       "user"    : "root",
-      "password": "Hardik@!23",
+      "password": "",
       "database": "assignment",
       "mysqlPORT": ""
     }

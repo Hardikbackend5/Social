@@ -5,9 +5,9 @@ const validator = require('../commonFunction');
 const upload_post = function (req, res, next) {
 
   var schema = Joi.object().keys({
-    user_id: Joi.string().required(),
-    description: Joi.string().max(500).required(),
-    image: Joi.string().required()
+    userId: Joi.string().required(),
+    body: Joi.string().max(500).required(),
+    title: Joi.string().max(500).required()
   });
 
   var validFields = validator.validateFields(req.body, res, schema);
@@ -19,9 +19,9 @@ const upload_post = function (req, res, next) {
 const update_post = function (req, res, next) {
   req.body.id = req.params.id
   var schema = Joi.object().keys({
-    user_id: Joi.string().required(),
-    description: Joi.string().max(500).optional(),
-    image: Joi.string().optional(),
+    userId: Joi.string().required(),
+    title: Joi.string().max(500).required(),
+    body: Joi.string().max(500).required(),
     id:Joi.string().required()
   });
 
@@ -35,7 +35,7 @@ const update_post = function (req, res, next) {
 const delete_post = function (req, res, next) {
   req.body.id = req.params.id
   var schema = Joi.object().keys({
-    user_id: Joi.string().required(),
+    userId: Joi.string().required(),
     id:Joi.string().required()
   });
 
@@ -48,8 +48,8 @@ const delete_post = function (req, res, next) {
 //like / dislike a post
 const like_dislike_post = function (req, res, next) {
   var schema = Joi.object().keys({
-    user_id: Joi.string().required(),
-    post_id:Joi.string().required()
+    userId: Joi.string().required(),
+    id:Joi.string().required()
   });
 
   var validFields = validator.validateFields(req.body, res, schema);
@@ -61,9 +61,9 @@ const like_dislike_post = function (req, res, next) {
 //get posts
 const get_post = function (req, res, next) {
   var schema = Joi.object().keys({
-    user_id:Joi.string().required(),
+    userId:Joi.string().required(),
     sort_by:Joi.number().optional(),
-    post_id:Joi.number().optional()
+    id:Joi.number().optional()
   });
 
   var validFields = validator.validateFields(req.params, res, schema);
@@ -75,7 +75,19 @@ const get_post = function (req, res, next) {
 //get timeline posts
 const timeline_feed = function (req, res, next) {
   var schema = Joi.object().keys({
-    user_id:Joi.string().required()
+    userId:Joi.string().required()
+  });
+
+  var validFields = validator.validateFields(req.params, res, schema);
+  if (validFields) {
+    next();
+  }
+}  
+
+//get posts
+const get_post_by_id = function (req, res, next) {
+  var schema = Joi.object().keys({
+    id:Joi.number().optional()
   });
 
   var validFields = validator.validateFields(req.params, res, schema);
@@ -91,5 +103,6 @@ module.exports = {
   delete_post:delete_post,
   like_dislike_post:like_dislike_post,
   get_post:get_post,
-  timeline_feed:timeline_feed
+  timeline_feed:timeline_feed,
+  get_post_by_id:get_post_by_id
 }

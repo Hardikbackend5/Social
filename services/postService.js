@@ -4,8 +4,8 @@ const commonFunc = require('../commonFunction');
 async function insert_post(opts) {
     try {
       
-        let sql = 'INSERT INTO tb_posts (user_id, image, description) VALUES (?,?,?) ';
-        let data = await commonFunc.executeSqlQuery(sql, [opts.user_id, opts.image, opts.description]);
+        let sql = 'INSERT INTO tb_posts (userId, body, title) VALUES (?,?,?) ';
+        let data = await commonFunc.executeSqlQuery(sql, [opts.userId, opts.body, opts.title]);
         return data;
 
     } catch (error) {
@@ -21,12 +21,12 @@ async function get_posts(opts) {
             sql += ' AND id = ? '
             values.push(opts.post_id)
         }
-        if(opts.user_id){
-            sql += ' AND user_id = ? '
-            values.push(opts.user_id)
+        if(opts.userId){
+            sql += ' AND userId = ? '
+            values.push(opts.userId)
         }
         if(opts.user_ids && opts.user_ids.length){
-            sql += ' AND user_id IN (?) '
+            sql += ' AND userId IN (?) '
             values.push(opts.user_ids)
         }
         if(opts.sort_by == 1){
@@ -44,8 +44,8 @@ async function get_posts(opts) {
 
 async function update_post(opts) {
     try {
-        let sql = 'UPDATE tb_posts SET image = ?, description = ? where id = ? ';
-        let data = await commonFunc.executeSqlQuery(sql, [opts.image, opts.description, opts.post_id]);
+        let sql = 'UPDATE tb_posts SET body = ?, title = ? where id = ? ';
+        let data = await commonFunc.executeSqlQuery(sql, [opts.body, opts.title, opts.post_id]);
         return data
     } catch (error) {
         throw error;
@@ -55,7 +55,7 @@ async function update_post(opts) {
 async function delete_post(opts) {
     try {
         let sql = 'DELETE from tb_posts where id = ? ';
-        let data = await commonFunc.executeSqlQuery(sql, [opts.post_id, opts.user_id]);
+        let data = await commonFunc.executeSqlQuery(sql, [opts.post_id]);
         return data
     } catch (error) {
         throw error;
@@ -66,9 +66,9 @@ async function get_post_likes(opts) {
     try {
         let values = [opts.post_id];
         let sql = 'SELECT * FROM tb_post_likes WHERE post_id = ? ';
-        if(opts.user_id){
-            sql += ' AND user_id = ? '
-            values.push(opts.user_id)
+        if(opts.userId){
+            sql += ' AND userId = ? '
+            values.push(opts.userId)
         }
         let data = await commonFunc.executeSqlQuery(sql, values);
         return data
@@ -79,8 +79,8 @@ async function get_post_likes(opts) {
 
 async function like_post(opts) {
     try {
-        let values = [opts.post_id, opts.user_id];
-        let sql = 'INSERT INTO tb_post_likes (post_id, user_id) VALUES (?,?) ';
+        let values = [opts.post_id, opts.userId];
+        let sql = 'INSERT INTO tb_post_likes (post_id, userId) VALUES (?,?) ';
         let data = await commonFunc.executeSqlQuery(sql, values);
         return data
     } catch (error) {
@@ -90,8 +90,8 @@ async function like_post(opts) {
 
 async function dislike_post(opts) {
     try {
-        let sql = 'DELETE from tb_post_likes where post_id = ? AND user_id = ?';
-        let data = await commonFunc.executeSqlQuery(sql, [opts.post_id, opts.user_id]);
+        let sql = 'DELETE from tb_post_likes where post_id = ? AND userId = ?';
+        let data = await commonFunc.executeSqlQuery(sql, [opts.post_id, opts.userId]);
         return data
     } catch (error) {
         throw error;
